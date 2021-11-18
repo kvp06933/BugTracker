@@ -5,7 +5,12 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Models.Enums
 {
-    public class BTRoles
+    public enum BTRoles
     {
+        Admin,
+        ProjectManager,
+        Developer,
+        Submitter,
+        DemoUser
     }
 }

@@ -170,16 +170,10 @@ namespace BugTracker.Data.Migrations
                     b.Property<DateTimeOffset>("InviteDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("InviteeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("InviteeId1")
+                    b.Property<string>("InviteeId")
                         .HasColumnType("text");
 
-                    b.Property<int>("InvitorId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("InvitorId1")
+                    b.Property<string>("InvitorId")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsValid")
@@ -201,9 +195,9 @@ namespace BugTracker.Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("InviteeId1");
+                    b.HasIndex("InviteeId");
 
-                    b.HasIndex("InvitorId1");
+                    b.HasIndex("InvitorId");
 
                     b.HasIndex("ProjectId");
 
@@ -753,11 +747,11 @@ namespace BugTracker.Data.Migrations
 
                     b.HasOne("BugTracker.Models.BTUser", "Invitee")
                         .WithMany()
-                        .HasForeignKey("InviteeId1");
+                        .HasForeignKey("InviteeId");
 
                     b.HasOne("BugTracker.Models.BTUser", "Invitor")
                         .WithMany()
-                        .HasForeignKey("InvitorId1");
+                        .HasForeignKey("InvitorId");
 
                     b.HasOne("BugTracker.Models.Project", "Project")
                         .WithMany()

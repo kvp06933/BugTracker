@@ -30,10 +30,10 @@ namespace BugTracker.Models
         public int ProjectId { get; set; }
 
         [DisplayName("Invitor")]
-        public int InvitorId { get; set; }
+        public string InvitorId { get; set; }
 
         [DisplayName("Invitee")]
-        public int InviteeId { get; set; }
+        public string InviteeId { get; set; }
 
         [DisplayName("Invitee Email")]
         [DataType(DataType.EmailAddress)]
