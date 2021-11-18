@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BugTracker.Models
+namespace BugTracker.Data
 {
-    public class TicketNotification
+    public class DataUtility
     {
     }
 }

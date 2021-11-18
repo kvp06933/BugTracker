@@ -11,14 +11,14 @@ namespace BugTracker.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
+        public DateTime? Updated { get; set; }
         public bool Archived { get; set; }
         public bool ArchivedByProject { get; set; }
 
         public int ProjectId { get; set; }
-        public string TicketType { get; set; }
-        public string TicketStatus { get; set; }
-        public string TicketPriority { get; set; }
+        public int TicketTypeId { get; set; }
+        public int TicketStatusId { get; set; }
+        public int TicketPriorityId { get; set; }
         public string UserId { get; set; }
         public string DevloperId { get; set; }
 
@@ -26,7 +26,6 @@ namespace BugTracker.Models
         public virtual ICollection<TicketComment> Comment { get; set; } = new HashSet<TicketComment>();
         public virtual ICollection<TicketAttachment> Attachment { get; set; } = new HashSet<TicketAttachment>();
         public virtual ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
-        public virtual ICollection<TicketNotification> Notification { get; set; } = new HashSet<TicketNotification>();
         public virtual ICollection<TicketTask> Task { get; set; } = new HashSet<TicketTask>();
 
     }
