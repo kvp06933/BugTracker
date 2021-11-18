@@ -47,6 +47,85 @@ namespace BugTracker.Data
             var roleManagerSvc = svcProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManagerSvc = svcProvider.GetRequiredService<UserManager<BTUser>>();
             await dbContextSvc.Database.MigrateAsync();
+
+            //Things we need to create:
+            //Roles
+            await SeedRolesAsync(roleManagerSvc);
+            //Companies
+            await SeedCompaniesAsync(dbContextSvc);
+            //Users
+            await SeedUsersAsync(userManagerSvc);
+            //Demo Users
+            await SeedDemoUsersAsync(userManagerSvc);
+            //ProjectPriorities
+            await SeedProjectPrioritiesAsync(dbContextSvc);
+            //Ticket Statuses
+            await SeedTicketStatusesAsync(dbContextSvc);
+            //Ticket Priorities
+            await SeedTicketPrioritiesAsync(dbContextSvc);
+            //Ticket Types
+            await SeedTicketTypesAsync(dbContextSvc);
+            //Notification Types
+            await SeedNotificationTypesAsync(dbContextSvc);
+            //Projects
+            await SeedProjectsAsync(dbContextSvc);
+            //Tickets
+            await SeedTicketsAsync(dbContextSvc);
+        }
+
+        private static async Task SeedTicketsAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedProjectsAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedNotificationTypesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedTicketTypesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedTicketPrioritiesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedTicketStatusesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedProjectPrioritiesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedCompaniesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedUsersAsync(UserManager<BTUser> userManagerSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedDemoUsersAsync(UserManager<BTUser> userManagerSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManagerSvc)
+        {
+            throw new NotImplementedException();
         }
     }
 }
