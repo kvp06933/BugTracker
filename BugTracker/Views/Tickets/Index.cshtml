@@ -31,19 +31,22 @@
                 @Html.DisplayNameFor(model => model.ArchivedByProject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TicketTypeId)
+                @Html.DisplayNameFor(model => model.DevloperUserId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TicketStatusId)
+                @Html.DisplayNameFor(model => model.OwnerUser)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TicketPriorityId)
+                @Html.DisplayNameFor(model => model.Project)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+                @Html.DisplayNameFor(model => model.TicketType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DevloperId)
+                @Html.DisplayNameFor(model => model.TicketPriority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketStatus)
             </th>
             <th></th>
         </tr>
@@ -70,19 +73,22 @@
                 @Html.DisplayFor(modelItem => item.ArchivedByProject)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketTypeId)
+                @Html.DisplayFor(modelItem => item.DevloperUserId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketStatusId)
+                @Html.DisplayFor(modelItem => item.OwnerUser.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketPriorityId)
+                @Html.DisplayFor(modelItem => item.Project.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserId)
+                @Html.DisplayFor(modelItem => item.TicketType.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DevloperId)
+                @Html.DisplayFor(modelItem => item.TicketPriority.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketStatus.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

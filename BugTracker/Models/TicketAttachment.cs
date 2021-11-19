@@ -30,7 +30,7 @@ namespace BugTracker.Models
         [DataType(DataType.Upload)]
         public IFormFile Attachment { get; set; }
 
-        public byte FileData { get; set; }
+        public byte[] FileData { get; set; }
 
         [DisplayName("File Name")]
         public string FileName { get; set; }

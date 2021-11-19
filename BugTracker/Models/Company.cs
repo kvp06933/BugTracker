@@ -35,7 +35,7 @@ namespace BugTracker.Models
         public string ImageType { get; set; }
 
         [DisplayName("Company Image")]
-        public byte ImageData { get; set; }
+        public byte[] ImageData { get; set; }
 
         //--Navigational Properties--//
         public virtual ICollection<BTUser> Members { get; set; } = new HashSet<BTUser>();

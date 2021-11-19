@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BugTracker.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,7 +32,7 @@ namespace BugTracker.Data.Migrations
                     Description = table.Column<string>(type: "text", nullable: true),
                     ImageName = table.Column<string>(type: "text", nullable: true),
                     ImageType = table.Column<string>(type: "text", nullable: true),
-                    ImageData = table.Column<byte>(type: "smallint", nullable: false)
+                    ImageData = table.Column<byte[]>(type: "bytea", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -133,7 +133,7 @@ namespace BugTracker.Data.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: true),
-                    ImageFile = table.Column<byte>(type: "smallint", nullable: false),
+                    ImageFile = table.Column<byte[]>(type: "bytea", nullable: true),
                     ImageType = table.Column<string>(type: "text", nullable: true),
                     CompanyId = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -370,16 +370,47 @@ namespace BugTracker.Data.Migrations
                     TicketTypeId = table.Column<int>(type: "integer", nullable: false),
                     TicketStatusId = table.Column<int>(type: "integer", nullable: false),
                     TicketPriorityId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true),
-                    DevloperId = table.Column<string>(type: "text", nullable: true)
+                    OwnerUserId = table.Column<string>(type: "text", nullable: true),
+                    DevloperUserId = table.Column<string>(type: "text", nullable: true),
+                    DeveloperUserId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_DeveloperUserId",
+                        column: x => x.DeveloperUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Tickets_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_TicketPriorities_TicketPriorityId",
+                        column: x => x.TicketPriorityId,
+                        principalTable: "TicketPriorities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_TicketStatuses_TicketStatusId",
+                        column: x => x.TicketStatusId,
+                        principalTable: "TicketStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_TicketTypes_TicketTypeId",
+                        column: x => x.TicketTypeId,
+                        principalTable: "TicketTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -540,7 +571,7 @@ namespace BugTracker.Data.Migrations
                     TicketTaskId = table.Column<int>(type: "integer", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    FileData = table.Column<byte>(type: "smallint", nullable: false),
+                    FileData = table.Column<byte[]>(type: "bytea", nullable: true),
                     FileName = table.Column<string>(type: "text", nullable: true),
                     FileType = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true)
@@ -706,9 +737,34 @@ namespace BugTracker.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_DeveloperUserId",
+                table: "Tickets",
+                column: "DeveloperUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_OwnerUserId",
+                table: "Tickets",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_ProjectId",
                 table: "Tickets",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_TicketPriorityId",
+                table: "Tickets",
+                column: "TicketPriorityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_TicketStatusId",
+                table: "Tickets",
+                column: "TicketStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_TicketTypeId",
+                table: "Tickets",
+                column: "TicketTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TicketTasks_TaskTypeId",
@@ -762,9 +818,6 @@ namespace BugTracker.Data.Migrations
                 name: "TicketHistories");
 
             migrationBuilder.DropTable(
-                name: "TicketPriorities");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -774,19 +827,22 @@ namespace BugTracker.Data.Migrations
                 name: "TicketTasks");
 
             migrationBuilder.DropTable(
+                name: "Tickets");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "TicketPriorities");
 
             migrationBuilder.DropTable(
                 name: "TicketStatuses");
 
             migrationBuilder.DropTable(
                 name: "TicketTypes");
-
-            migrationBuilder.DropTable(
-                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Companies");

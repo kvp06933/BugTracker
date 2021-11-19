@@ -42,6 +42,7 @@ namespace BugTracker.Models
 
         //--Navigational Properties--//
 
+        public virtual Project Project { get; set; }
         public virtual BTUser Sender { get; set; }
         public virtual BTUser Recipient { get; set; }
         public virtual Ticket Ticket { get; set; }
