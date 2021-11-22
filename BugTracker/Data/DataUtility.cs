@@ -62,29 +62,29 @@ namespace BugTracker.Data
             //Users
             await SeedUsersAsync(userManagerSvc);
             //Demo Users
-            //await SeedDemoUsersAsync(userManagerSvc);
+            await SeedDemoUsersAsync(userManagerSvc);
             //ProjectPriorities
-            //await SeedProjectPrioritiesAsync(dbContextSvc);
-            ////Ticket Statuses
-            //await SeedTicketStatusesAsync(dbContextSvc);
-            ////Ticket Priorities
-            //await SeedTicketPrioritiesAsync(dbContextSvc);
-            ////Ticket Types
-            //await SeedTicketTypesAsync(dbContextSvc);
+            await SeedProjectPrioritiesAsync(dbContextSvc);
+            //Ticket Statuses
+            await SeedTicketStatusesAsync(dbContextSvc);
+            //Ticket Priorities
+            await SeedTicketPrioritiesAsync(dbContextSvc);
+            //Ticket Types
+            await SeedTicketTypesAsync(dbContextSvc);
             //Notification Types
-            //await SeedNotificationTypesAsync(dbContextSvc);
+            await SeedNotificationTypesAsync(dbContextSvc);
             //Projects
-            //await SeedProjectsAsync(dbContextSvc);
+            await SeedProjectsAsync(dbContextSvc);
             //Tickets
-            //await SeedTicketsAsync(dbContextSvc);
+            await SeedTicketsAsync(dbContextSvc);
         }
         private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManagerSvc)
         {
-            await roleManagerSvc.CreateAsync(new IdentityRole(BTRoles.Admin.ToString()));
-            await roleManagerSvc.CreateAsync(new IdentityRole(BTRoles.ProjectManager.ToString()));
-            await roleManagerSvc.CreateAsync(new IdentityRole(BTRoles.Developer.ToString()));
-            await roleManagerSvc.CreateAsync(new IdentityRole(BTRoles.Submitter.ToString()));
-            await roleManagerSvc.CreateAsync(new IdentityRole(BTRoles.DemoUser.ToString()));
+            await roleManagerSvc.CreateAsync(new IdentityRole(nameof(BTRoles.Admin)));
+            await roleManagerSvc.CreateAsync(new IdentityRole(nameof(BTRoles.ProjectManager)));
+            await roleManagerSvc.CreateAsync(new IdentityRole(nameof(BTRoles.Developer)));
+            await roleManagerSvc.CreateAsync(new IdentityRole(nameof(BTRoles.Submitter)));
+            await roleManagerSvc.CreateAsync(new IdentityRole(nameof(BTRoles.DemoUser)));
         }
 
         private static async Task SeedCompaniesAsync(ApplicationDbContext dbContextSvc)
@@ -496,143 +496,143 @@ namespace BugTracker.Data
             }
         }
 
-        //private static async Task SeedDemoUsersAsync(UserManager<BTUser> userManagerSvc)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        private static async Task SeedDemoUsersAsync(UserManager<BTUser> userManagerSvc)
+        {
+            throw new NotImplementedException();
+        }
 
-        //private static async Task SeedProjectPrioritiesAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    try
-        //    {
-        //        IList<ProjectPriority> defaultPriorities = new List<ProjectPriority>()
-        //        {
-        //            new ProjectPriority() {Name = "Low" },
-        //            new ProjectPriority() {Name = "Medium"},
-        //            new ProjectPriority() {Name = "High"},
-        //            new ProjectPriority() {Name = "Urgent"},
+        private static async Task SeedProjectPrioritiesAsync(ApplicationDbContext dbContextSvc)
+        {
+            try
+            {
+                IList<ProjectPriority> defaultPriorities = new List<ProjectPriority>()
+                {
+                    new ProjectPriority() {Name = "Low" },
+                    new ProjectPriority() {Name = "Medium"},
+                    new ProjectPriority() {Name = "High"},
+                    new ProjectPriority() {Name = "Urgent"},
 
-        //        };
+                };
 
-        //        var dbPriorities = dbContextSvc.ProjectPriorities.Select(c => c.Name).ToList();
+                var dbPriorities = dbContextSvc.ProjectPriorities.Select(c => c.Name).ToList();
 
-        //        await dbContextSvc.ProjectPriorities.AddRangeAsync(defaultPriorities.Where(c => !dbPriorities.Contains(c.Name)));
-        //        await dbContextSvc.SaveChangesAsync();
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("******** ERROR ********");
-        //        Console.WriteLine("Error Seeding Project Priorities");
-        //        Console.WriteLine(ex.Message);
-        //        Console.WriteLine("***********************");
-        //    }
-        //}
-
-        //private static async Task SeedTicketStatusesAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    try
-        //    {
-        //        IList<TicketStatus> defaultTicketStatuses = new List<TicketStatus>()
-        //        {
-        //            new TicketStatus() {Name = "New" },
-        //            new TicketStatus() {Name = "Development"},
-        //            new TicketStatus() {Name = "Testing"},
-        //            new TicketStatus() {Name = "Resolved"},
-
-        //        };
-
-        //        var dbTicketStatuses = dbContextSvc.TicketStatuses.Select(c => c.Name).ToList();
-
-        //        await dbContextSvc.TicketStatuses.AddRangeAsync(defaultTicketStatuses.Where(c => !dbTicketStatuses.Contains(c.Name)));
-        //        await dbContextSvc.SaveChangesAsync();
+                await dbContextSvc.ProjectPriorities.AddRangeAsync(defaultPriorities.Where(c => !dbPriorities.Contains(c.Name)));
+                await dbContextSvc.SaveChangesAsync();
 
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("******** ERROR ********");
-        //        Console.WriteLine("Error Seeding Ticket Statuses");
-        //        Console.WriteLine(ex.Message);
-        //        Console.WriteLine("***********************");
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("******** ERROR ********");
+                Console.WriteLine("Error Seeding Project Priorities");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************");
+            }
+        }
 
-        //private static async Task SeedTicketPrioritiesAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    try
-        //    {
-        //        IList<TicketPriority> defaultTicketPriorities = new List<TicketPriority>()
-        //        {
-        //            new TicketPriority() {Name = "Low" },
-        //            new TicketPriority() {Name = "Medium"},
-        //            new TicketPriority() {Name = "High"},
-        //            new TicketPriority() {Name = "Urgent"},
+        private static async Task SeedTicketStatusesAsync(ApplicationDbContext dbContextSvc)
+        {
+            try
+            {
+                IList<TicketStatus> defaultTicketStatuses = new List<TicketStatus>()
+                {
+                    new TicketStatus() {Name = "New" },
+                    new TicketStatus() {Name = "Development"},
+                    new TicketStatus() {Name = "Testing"},
+                    new TicketStatus() {Name = "Resolved"},
 
-        //        };
+                };
 
-        //        var dbTicketPriorities = dbContextSvc.TicketPriorities.Select(c => c.Name).ToList();
+                var dbTicketStatuses = dbContextSvc.TicketStatuses.Select(c => c.Name).ToList();
 
-        //        await dbContextSvc.TicketPriorities.AddRangeAsync(defaultTicketPriorities.Where(c => !dbTicketPriorities.Contains(c.Name)));
-        //        await dbContextSvc.SaveChangesAsync();
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("******** ERROR ********");
-        //        Console.WriteLine("Error Seeding Ticket Statuses");
-        //        Console.WriteLine(ex.Message);
-        //        Console.WriteLine("***********************");
-        //    }
-        //}
-
-        //private static async Task SeedTicketTypesAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    try
-        //    {
-        //        IList<TicketType> defaultTicketTypes = new List<TicketType>()
-        //        {
-        //            new TicketType() {Name = "New Development" },
-        //            new TicketType() {Name = "Work Task"},
-        //            new TicketType() {Name = "Defect"},
-        //            new TicketType() {Name = "Change Request"},
-        //            new TicketType() {Name = "Enhancement"},
-        //            new TicketType() {Name = "General Task"},
-
-        //        };
-
-        //        var dbTicketTypes = dbContextSvc.TicketTypes.Select(c => c.Name).ToList();
-
-        //        await dbContextSvc.TicketTypes.AddRangeAsync(defaultTicketTypes.Where(c => !dbTicketTypes.Contains(c.Name)));
-        //        await dbContextSvc.SaveChangesAsync();
+                await dbContextSvc.TicketStatuses.AddRangeAsync(defaultTicketStatuses.Where(c => !dbTicketStatuses.Contains(c.Name)));
+                await dbContextSvc.SaveChangesAsync();
 
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("******** ERROR ********");
-        //        Console.WriteLine("Error Seeding Ticket Types");
-        //        Console.WriteLine(ex.Message);
-        //        Console.WriteLine("***********************");
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("******** ERROR ********");
+                Console.WriteLine("Error Seeding Ticket Statuses");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************");
+            }
+        }
 
-        //private static async Task SeedNotificationTypesAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        private static async Task SeedTicketPrioritiesAsync(ApplicationDbContext dbContextSvc)
+        {
+            try
+            {
+                IList<TicketPriority> defaultTicketPriorities = new List<TicketPriority>()
+                {
+                    new TicketPriority() {Name = "Low" },
+                    new TicketPriority() {Name = "Medium"},
+                    new TicketPriority() {Name = "High"},
+                    new TicketPriority() {Name = "Urgent"},
 
-        //private static async Task SeedProjectsAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    throw new NotImplementedException();
-        //}
+                };
 
-        //private static async Task SeedTicketsAsync(ApplicationDbContext dbContextSvc)
-        //{
-        //    throw new NotImplementedException();
-        //}
+                var dbTicketPriorities = dbContextSvc.TicketPriorities.Select(c => c.Name).ToList();
+
+                await dbContextSvc.TicketPriorities.AddRangeAsync(defaultTicketPriorities.Where(c => !dbTicketPriorities.Contains(c.Name)));
+                await dbContextSvc.SaveChangesAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("******** ERROR ********");
+                Console.WriteLine("Error Seeding Ticket Statuses");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************");
+            }
+        }
+
+        private static async Task SeedTicketTypesAsync(ApplicationDbContext dbContextSvc)
+        {
+            try
+            {
+                IList<TicketType> defaultTicketTypes = new List<TicketType>()
+                {
+                    new TicketType() {Name = "New Development" },
+                    new TicketType() {Name = "Work Task"},
+                    new TicketType() {Name = "Defect"},
+                    new TicketType() {Name = "Change Request"},
+                    new TicketType() {Name = "Enhancement"},
+                    new TicketType() {Name = "General Task"},
+
+                };
+
+                var dbTicketTypes = dbContextSvc.TicketTypes.Select(c => c.Name).ToList();
+
+                await dbContextSvc.TicketTypes.AddRangeAsync(defaultTicketTypes.Where(c => !dbTicketTypes.Contains(c.Name)));
+                await dbContextSvc.SaveChangesAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("******** ERROR ********");
+                Console.WriteLine("Error Seeding Ticket Types");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************");
+            }
+        }
+
+        private static async Task SeedNotificationTypesAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedProjectsAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedTicketsAsync(ApplicationDbContext dbContextSvc)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
