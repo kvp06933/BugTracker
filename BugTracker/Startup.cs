@@ -1,5 +1,7 @@
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services;
+using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +32,10 @@ namespace BugTracker
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    DataUtility.GetConnectionString(Configuration)));
+                    DataUtility.GetConnectionString(Configuration),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -38,6 +43,8 @@ namespace BugTracker
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
+            //Custom Services
+            services.AddScoped<IBTRolesService, BTRolesService>();
             services.AddControllersWithViews();
         }
 

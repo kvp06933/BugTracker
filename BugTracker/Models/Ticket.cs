@@ -20,7 +20,7 @@ namespace BugTracker.Models
         public int TicketStatusId { get; set; }
         public int TicketPriorityId { get; set; }
         public string OwnerUserId { get; set; }
-        public string DevloperUserId { get; set; }
+        public string DeveloperUserId { get; set; }
 
         //--Navigational Properties--//
 
@@ -31,10 +31,10 @@ namespace BugTracker.Models
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
 
-        public virtual ICollection<TicketComment> Comment { get; set; } = new HashSet<TicketComment>();
-        public virtual ICollection<TicketAttachment> Attachment { get; set; } = new HashSet<TicketAttachment>();
+        public virtual ICollection<TicketComment> Comments { get; set; } = new HashSet<TicketComment>();
+        public virtual ICollection<TicketAttachment> Attachments { get; set; } = new HashSet<TicketAttachment>();
         public virtual ICollection<TicketHistory> History { get; set; } = new HashSet<TicketHistory>();
-        public virtual ICollection<TicketTask> Task { get; set; } = new HashSet<TicketTask>();
-
+        public virtual ICollection<TicketTask> Tasks { get; set; } = new HashSet<TicketTask>();
+        public virtual ICollection<Notification> Notifications { get; set; } = new HashSet<Notification>();
     }
 }
