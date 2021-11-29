@@ -12,10 +12,10 @@ namespace BugTracker.Models
         public int Id { get; set; }
 
         [Required]
-        [DisplayName("Ticket Name")]
+        [DisplayName("Ticket")]
         public int TicketId { get; set; }
 
-        [DisplayName("Ticket User")]
+        [DisplayName("Team Member")]
         [Required]
         public string UserId { get; set; }
 

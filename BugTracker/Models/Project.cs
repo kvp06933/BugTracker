@@ -47,7 +47,7 @@ namespace BugTracker.Models
         public string ImageType { get; set; }
 
         [DisplayName("Project Image")]
-        public byte ImageData { get; set; }
+        public byte[] ImageData { get; set; }
 
         [DisplayName("Company")]
         public int CompanyId { get; set; }

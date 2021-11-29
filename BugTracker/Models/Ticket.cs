@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,18 +10,43 @@ namespace BugTracker.Models
     public class Ticket
     {
         public int Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [DisplayName("Title")]
         public string Title { get; set; }
+
+        [Required]
+        [StringLength(2500)]
+        [DisplayName("Description")]
         public string Description { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTimeOffset Created { get; set; }
+        [DataType(DataType.Date)]
+        public DateTimeOffset? Updated { get; set; }
+
+        [DisplayName("Archived")]
         public bool Archived { get; set; }
+
+        [DisplayName("Archived By Project")]
         public bool ArchivedByProject { get; set; }
 
+        [DisplayName("Project")]
         public int ProjectId { get; set; }
+
+        [DisplayName("Ticket Type")]
         public int TicketTypeId { get; set; }
+
+        [DisplayName("Ticket Status")]
         public int TicketStatusId { get; set; }
+
+        [DisplayName("Ticket Priority")]
         public int TicketPriorityId { get; set; }
+
+        [DisplayName("Ticket Owner")]
         public string OwnerUserId { get; set; }
+
+        [DisplayName("Ticket Developer")]
         public string DeveloperUserId { get; set; }
 
         //--Navigational Properties--//

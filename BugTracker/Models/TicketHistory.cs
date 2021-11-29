@@ -31,8 +31,7 @@ namespace BugTracker.Models
         [DataType(DataType.Date)]
         [DisplayName("Date Modified")]
         public DateTimeOffset Created { get; set; }
-        [DataType(DataType.Date)]
-        public DateTimeOffset Updated { get; set; }
+        
 
         [DisplayName("Description of Change")]
         public string Description { get; set; }

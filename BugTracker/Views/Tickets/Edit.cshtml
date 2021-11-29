@@ -69,9 +69,9 @@
                 <span asp-validation-for="OwnerUserId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DevloperUserId" class="control-label"></label>
-                <input asp-for="DevloperUserId" class="form-control" />
-                <span asp-validation-for="DevloperUserId" class="text-danger"></span>
+                <label asp-for="DeveloperUserId" class="control-label"></label>
+                <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
+                <span asp-validation-for="DeveloperUserId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

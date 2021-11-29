@@ -7,23 +7,62 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using BugTracker.Services.Interfaces;
+using BugTracker.Extensions;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ProjectsController(ApplicationDbContext context)
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IBTProjectService _projectService;
+        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTProjectService projectService)
         {
             _context = context;
+            _userManager = userManager;
+            _projectService = projectService;
         }
 
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
-            return View(await applicationDbContext.ToListAsync());
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Project> model = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+            return View(model);
+        }
+
+        // GET: My Projects
+        public async Task<IActionResult> MyProjects()
+        {
+            //Get Current User Id
+            string userId = _userManager.GetUserId(User);
+            List<Project> model = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(model);
+        }
+
+        // GET: All Projects
+        public async Task<IActionResult> AllProjects()
+        {
+            //Get Current User Id
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Project> model = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+
+            return View(model);
+        }
+
+        // GET: All Projects
+        public async Task<IActionResult> ArchivedProjects()
+        {
+            //Get Current User Id
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Project> model = await _projectService.GetArchivedProjectsByCompanyAsync(companyId);
+
+            return View(model);
         }
 
         // GET: Projects/Details/5

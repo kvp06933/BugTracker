@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BugTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211119194557_Initial")]
+    [Migration("20211129024810_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,7 +223,7 @@ namespace BugTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("NotificationTypeId")
+                    b.Property<int>("NotificationTypeId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("ProjectId")
@@ -298,8 +298,8 @@ namespace BugTracker.Data.Migrations
                     b.Property<DateTimeOffset?>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte>("ImageData")
-                        .HasColumnType("smallint");
+                    b.Property<byte[]>("ImageData")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("ImageName")
                         .HasColumnType("text");
@@ -355,16 +355,15 @@ namespace BugTracker.Data.Migrations
                     b.Property<bool>("ArchivedByProject")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(2500)
+                        .HasColumnType("character varying(2500)");
 
                     b.Property<string>("DeveloperUserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DevloperUserId")
                         .HasColumnType("text");
 
                     b.Property<string>("OwnerUserId")
@@ -383,10 +382,12 @@ namespace BugTracker.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<DateTime?>("Updated")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset?>("Updated")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -501,9 +502,6 @@ namespace BugTracker.Data.Migrations
 
                     b.Property<int>("TicketId")
                         .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("Updated")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -787,7 +785,9 @@ namespace BugTracker.Data.Migrations
                 {
                     b.HasOne("BugTracker.Models.NotificationType", "NotificationType")
                         .WithMany()
-                        .HasForeignKey("NotificationTypeId");
+                        .HasForeignKey("NotificationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BugTracker.Models.Project", "Project")
                         .WithMany("Notifications")
@@ -806,7 +806,7 @@ namespace BugTracker.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("BugTracker.Models.Ticket", "Ticket")
-                        .WithMany()
+                        .WithMany("Notifications")
                         .HasForeignKey("TicketId");
 
                     b.Navigation("NotificationType");
@@ -887,7 +887,7 @@ namespace BugTracker.Data.Migrations
             modelBuilder.Entity("BugTracker.Models.TicketAttachment", b =>
                 {
                     b.HasOne("BugTracker.Models.Ticket", "Ticket")
-                        .WithMany("Attachment")
+                        .WithMany("Attachments")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -910,7 +910,7 @@ namespace BugTracker.Data.Migrations
             modelBuilder.Entity("BugTracker.Models.TicketComment", b =>
                 {
                     b.HasOne("BugTracker.Models.Ticket", "Ticket")
-                        .WithMany("Comment")
+                        .WithMany("Comments")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -954,7 +954,7 @@ namespace BugTracker.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("BugTracker.Models.Ticket", "Ticket")
-                        .WithMany("Task")
+                        .WithMany("Tasks")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1041,13 +1041,15 @@ namespace BugTracker.Data.Migrations
 
             modelBuilder.Entity("BugTracker.Models.Ticket", b =>
                 {
-                    b.Navigation("Attachment");
+                    b.Navigation("Attachments");
 
-                    b.Navigation("Comment");
+                    b.Navigation("Comments");
 
                     b.Navigation("History");
 
-                    b.Navigation("Task");
+                    b.Navigation("Notifications");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("BugTracker.Models.TicketTask", b =>

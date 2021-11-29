@@ -97,16 +97,10 @@ namespace BugTracker.Services
 
         public Task<List<BTUser>> GetUsersNotInRoleAsync(string roleName, int companyId)
         {
-            //TODO: Come back
-            try
             {
-                
+                throw new NotImplementedException();
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
         }
 
         public async Task<bool> IsUserInRoleAsync(BTUser user, string roleName)

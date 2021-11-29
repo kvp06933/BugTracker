@@ -175,7 +175,7 @@ namespace BugTracker.Data.Migrations
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ImageName = table.Column<string>(type: "text", nullable: true),
                     ImageType = table.Column<string>(type: "text", nullable: true),
-                    ImageData = table.Column<byte>(type: "smallint", nullable: false),
+                    ImageData = table.Column<byte[]>(type: "bytea", nullable: true),
                     CompanyId = table.Column<int>(type: "integer", nullable: false),
                     ProjectPriorityId = table.Column<int>(type: "integer", nullable: true),
                     Archived = table.Column<bool>(type: "boolean", nullable: false)
@@ -360,10 +360,10 @@ namespace BugTracker.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Created = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2500)", maxLength: 2500, nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     Archived = table.Column<bool>(type: "boolean", nullable: false),
                     ArchivedByProject = table.Column<bool>(type: "boolean", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
@@ -371,7 +371,6 @@ namespace BugTracker.Data.Migrations
                     TicketStatusId = table.Column<int>(type: "integer", nullable: false),
                     TicketPriorityId = table.Column<int>(type: "integer", nullable: false),
                     OwnerUserId = table.Column<string>(type: "text", nullable: true),
-                    DevloperUserId = table.Column<string>(type: "text", nullable: true),
                     DeveloperUserId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -425,11 +424,11 @@ namespace BugTracker.Data.Migrations
                     Message = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsViewed = table.Column<bool>(type: "boolean", nullable: false),
+                    NotificationTypeId = table.Column<int>(type: "integer", nullable: false),
                     TicketId = table.Column<int>(type: "integer", nullable: true),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
                     SenderId = table.Column<string>(type: "text", nullable: false),
-                    RecipientId = table.Column<string>(type: "text", nullable: false),
-                    NotificationTypeId = table.Column<int>(type: "integer", nullable: true)
+                    RecipientId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -451,7 +450,7 @@ namespace BugTracker.Data.Migrations
                         column: x => x.NotificationTypeId,
                         principalTable: "NotificationTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notifications_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -506,7 +505,6 @@ namespace BugTracker.Data.Migrations
                     OldValue = table.Column<string>(type: "text", nullable: true),
                     NewValue = table.Column<string>(type: "text", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>

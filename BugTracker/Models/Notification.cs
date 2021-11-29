@@ -26,6 +26,9 @@ namespace BugTracker.Models
         [DisplayName("Has been viewed")]
         public bool IsViewed { get; set; }
 
+        [DisplayName("Notification Type Id")]
+        public int NotificationTypeId { get; set; }
+
         [DisplayName("Ticket")]
         public int? TicketId { get; set; }
 

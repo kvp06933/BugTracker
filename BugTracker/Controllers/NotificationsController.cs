@@ -22,7 +22,7 @@ namespace BugTracker.Controllers
         // GET: Notifications
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Notifications.Include(n => n.Recipient).Include(n => n.Sender).Include(n => n.Ticket);
+            var applicationDbContext = _context.Notifications.Include(n => n.NotificationType).Include(n => n.Project).Include(n => n.Recipient).Include(n => n.Sender).Include(n => n.Ticket);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,6 +35,8 @@ namespace BugTracker.Controllers
             }
 
             var notification = await _context.Notifications
+                .Include(n => n.NotificationType)
+                .Include(n => n.Project)
                 .Include(n => n.Recipient)
                 .Include(n => n.Sender)
                 .Include(n => n.Ticket)
@@ -50,9 +52,11 @@ namespace BugTracker.Controllers
         // GET: Notifications/Create
         public IActionResult Create()
         {
+            ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name");
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Id");
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
             return View();
         }
 
@@ -61,7 +65,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Message,Created,IsViewed,TicketId,ProjectId,SenderId,RecipientId")] Notification notification)
+        public async Task<IActionResult> Create([Bind("Id,Title,Message,Created,IsViewed,NotificationTypeId,TicketId,ProjectId,SenderId,RecipientId")] Notification notification)
         {
             if (ModelState.IsValid)
             {
@@ -69,9 +73,11 @@ namespace BugTracker.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name", notification.NotificationTypeId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", notification.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", notification.SenderId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Id", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -88,9 +94,11 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
+            ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name", notification.NotificationTypeId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", notification.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", notification.SenderId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Id", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -99,7 +107,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Message,Created,IsViewed,TicketId,ProjectId,SenderId,RecipientId")] Notification notification)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Message,Created,IsViewed,NotificationTypeId,TicketId,ProjectId,SenderId,RecipientId")] Notification notification)
         {
             if (id != notification.Id)
             {
@@ -126,9 +134,11 @@ namespace BugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["NotificationTypeId"] = new SelectList(_context.NotificationTypes, "Id", "Name", notification.NotificationTypeId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", notification.ProjectId);
             ViewData["RecipientId"] = new SelectList(_context.Users, "Id", "Id", notification.RecipientId);
             ViewData["SenderId"] = new SelectList(_context.Users, "Id", "Id", notification.SenderId);
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Id", notification.TicketId);
+            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", notification.TicketId);
             return View(notification);
         }
 
@@ -141,6 +151,8 @@ namespace BugTracker.Controllers
             }
 
             var notification = await _context.Notifications
+                .Include(n => n.NotificationType)
+                .Include(n => n.Project)
                 .Include(n => n.Recipient)
                 .Include(n => n.Sender)
                 .Include(n => n.Ticket)

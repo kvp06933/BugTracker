@@ -13,13 +13,13 @@ namespace BugTracker.Models
     {
         public int Id { get; set; }
 
-        [DisplayName("Ticket Name")]
+        [DisplayName("Ticket")]
         public int TicketId { get; set; }
-        
 
+        [DisplayName("Ticket Task")]
         public int? TicketTaskId { get; set; }
         [Required]
-        [DisplayName("Ticket User")]
+        [DisplayName("Team Member")]
         public string UserId { get; set; }
 
         [DataType(DataType.Date)]
