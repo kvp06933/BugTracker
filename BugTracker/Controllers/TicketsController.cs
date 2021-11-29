@@ -7,23 +7,52 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using BugTracker.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTracker.Controllers
 {
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public TicketsController(ApplicationDbContext context)
+        private readonly IBTTicketService _ticketService;
+        private readonly UserManager<BTUser> _userManager;
+        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager)
         {
             _context = context;
+            _ticketService = ticketService;
+            _userManager = userManager;
         }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(await applicationDbContext.ToListAsync());
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> model = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
+            return View(model);
+        }
+        // GET: My Tickets
+        public async Task<IActionResult> MyTickets()
+        {
+            string userId = _userManager.GetUserId(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> model = await _ticketService.GetTicketsByUserIdAsync(userId,companyId);
+            return View(model);
+        }
+        // GET: All Tickets
+        public async Task<IActionResult> AllTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> model = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
+            return View(model);
+        }
+        // GET: Archived Tickets
+        public async Task<IActionResult> ArchivedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> model = await _ticketService.GetArchivedTicketsAsync(companyId);
+            return View(model);
         }
 
         // GET: Tickets/Details/5
