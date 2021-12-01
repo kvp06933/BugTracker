@@ -12,6 +12,8 @@ namespace BugTracker.Services
 {
     public class BTRolesService : IBTRolesService
     {
+        #region prewritten code
+
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<BTUser> _userManager;
@@ -54,7 +56,7 @@ namespace BugTracker.Services
         {
             try
             {
-                
+
                 List<IdentityRole> result = new List<IdentityRole>();
                 result = await _dbContext.Roles.ToListAsync();
                 return result;
@@ -136,5 +138,8 @@ namespace BugTracker.Services
                 throw;
             }
         }
+        #endregion
+        
+
     }
 }

@@ -13,6 +13,8 @@ namespace BugTracker.Services
 {
     public class BTProjectService : IBTProjectService
     {
+        #region prewritten code
+
         #region Properties
         private readonly ApplicationDbContext _context;
         private readonly IBTRolesService _rolesService;
@@ -648,6 +650,11 @@ namespace BugTracker.Services
             }
         }
 
+
+
+
+
+
         #endregion
 
         #region Update Project
@@ -669,5 +676,149 @@ namespace BugTracker.Services
 
         #endregion
 
+        #endregion
+        #region rewritten code
+
+        //private readonly ApplicationDbContext _dbContext;
+        //private readonly IBTRolesService _rolesService;
+        //public BTProjectService(ApplicationDbContext dbContext, IBTRolesService rolesService)
+        //{
+        //    _dbContext = dbContext;
+        //    _rolesService = rolesService;
+        //}
+
+
+
+        //public async Task AddNewProjectAsync(Project project)
+        //{
+        //    try
+        //    {
+        //        _dbContext.Add(project);
+        //        await _dbContext.SaveChangesAsync();
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
+
+        //public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
+        //{
+
+        //    _dbContext.Add(userId, projectId);
+        //    await _dbContext.SaveChangesAsync();
+        //}
+
+        //public Task<bool> AddUserToProjectAsync(string userId, int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task ArchiveProjectAsync(Project project)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<Project>> GetAllProjectsByCompanyAsync(int companyId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priorityName)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<Project>> GetArchivedProjectsByCompanyAsync(int companyId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<BTUser>> GetDevelopersOnProjectAsync(int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<BTUser> GetProjectManagerAsync(int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<BTUser>> GetSubmittersOnProjectAsync(int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<Project>> GetUnassignedProjectsAsync(int companyId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<Project>> GetUserProjectsAsync(string userId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<bool> IsAssignedProjectManagerAsync(string userId, int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<bool> IsUserOnProjectAsync(string userId, int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task<int> LookupProjectPriorityId(string priorityName)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task RemoveProjectManagerAsync(int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task RemoveUserFromProjectAsync(string userId, int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task RestoreProjectAsync(Project project)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Task UpdateProjectAsync(Project project)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        #endregion
     }
 }
