@@ -706,18 +706,48 @@ namespace BugTracker.Services
         //public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         //{
 
-        //    _dbContext.Add(userId, projectId);
-        //    await _dbContext.SaveChangesAsync();
+        //    try
+        //    {
+        //        BTUser currentPM = await GetProjectManagerAsync(projectId); 
+        //        if(!)
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
 
         //public Task<bool> AddUserToProjectAsync(string userId, int projectId)
         //{
-        //    throw new NotImplementedException();
+        //    try
+        //    {
+        //        BTUser user = 
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
 
-        //public Task ArchiveProjectAsync(Project project)
+        //public async Task ArchiveProjectAsync(Project project)
         //{
-        //    throw new NotImplementedException();
+        //    try
+        //    {
+        //        await UpdateProjectAsync(project);
+        //        foreach (Ticket ticket in project.Tickets)
+        //        {
+        //            ticket.ArchivedByProject = true;
+        //            _dbContext.Update(ticket);
+        //            await _dbContext.SaveChangesAsync();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
 
         //public Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
@@ -745,9 +775,31 @@ namespace BugTracker.Services
         //    throw new NotImplementedException();
         //}
 
-        //public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        //public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         //{
-        //    throw new NotImplementedException();
+        //    try
+        //    {
+        //        Project project = await _dbContext.Projects
+        //                                        .Include(p => p.Tickets)
+        //                                            .ThenInclude(t => t.TicketPriority)
+        //                                        .Include(p => p.Tickets)
+        //                                            .ThenInclude(t => t.TicketStatus)
+        //                                        .Include(p => p.Tickets)
+        //                                            .ThenInclude(t => t.TicketType)
+        //                                        .Include(p => p.Tickets)
+        //                                            .ThenInclude(t => t.DeveloperUser)
+        //                                        .Include(p => p.Tickets)
+        //                                            .ThenInclude(t => t.OwnerUser)
+        //                                        .Include(p => p.Members)
+        //                                        .Include(p => p.ProjectPriority)
+        //                                        .FirstOrDefaultAsync(p => p.Id == projectId && p.CompanyId == companyId);
+        //        return project;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
 
         //public Task<BTUser> GetProjectManagerAsync(int projectId)
@@ -810,14 +862,37 @@ namespace BugTracker.Services
         //    throw new NotImplementedException();
         //}
 
-        //public Task RestoreProjectAsync(Project project)
+        //public async Task RestoreProjectAsync(Project project)
         //{
-        //    throw new NotImplementedException();
+        //    try
+        //    {
+        //        await UpdateProjectAsync(project);
+        //        foreach (Ticket ticket in project.Tickets)
+        //        {
+        //            ticket.ArchivedByProject = false; ;
+        //            _dbContext.Update(ticket);
+        //            await _dbContext.SaveChangesAsync();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
 
-        //public Task UpdateProjectAsync(Project project)
+        //public async Task UpdateProjectAsync(Project project)
         //{
-        //    throw new NotImplementedException();
+        //    try
+        //    {
+        //        _dbContext.Projects.Update(project);
+        //        await _dbContext.SaveChangesAsync();
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
         //}
         #endregion
     }

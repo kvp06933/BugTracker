@@ -27,21 +27,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Created)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageType)
-            </th>
+           
             <th>
                 @Html.DisplayNameFor(model => model.ImageData)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
@@ -66,12 +59,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageType)
-            </td>
+            
             <td>
                 @if (item.ImageData != null)
                 {
@@ -81,11 +69,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Archived)
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.Company.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
+                @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -18,7 +18,8 @@ namespace BugTracker.Models
 
         [DisplayName("Ticket Task")]
         public int? TicketTaskId { get; set; }
-        [Required]
+
+        
         [DisplayName("Team Member")]
         public string UserId { get; set; }
 

@@ -7,16 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Extensions;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace BugTracker.Controllers
 {
     public class InvitesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTProjectService _projectService;
+        private readonly IEmailSender _emailService;
+        private readonly IBTInviteService _inviteService;
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IDataProtector _protector;
 
-        public InvitesController(ApplicationDbContext context)
+        public InvitesController(ApplicationDbContext context, IBTProjectService projectService, IEmailSender emailService, IBTInviteService inviteService, UserManager<BTUser> userManager, IDataProtectionProvider dataProtectionProvider)
         {
             _context = context;
+            _projectService = projectService;
+            _emailService = emailService;
+            _inviteService = inviteService;
+            _userManager = userManager;
+            _protector = dataProtectionProvider.CreateProtector("CF.BugTr@cker.2021!");
         }
 
         // GET: Invites
@@ -49,12 +64,10 @@ namespace BugTracker.Controllers
         }
 
         // GET: Invites/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-            ViewData["InviteeId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["InvitorId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
+            int companyId = User.Identity.GetCompanyId().Value;
+            ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
             return View();
         }
 
@@ -63,17 +76,37 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,InviteDate,JoinDate,CompanyToken,CompanyId,ProjectId,InvitorId,InviteeId,Email,FirstName,LastName,Message,IsValid")] Invite invite)
+        public async Task<IActionResult> Create([Bind("Id,ProjectId,InvitorId,Email,FirstName,LastName,Message")] Invite invite)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(invite);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                int companyId = User.Identity.GetCompanyId().Value;
+                if (ModelState.IsValid)
+                {
+                    Guid guid = Guid.NewGuid();
+                    string token = _protector.Protect(guid.ToString());
+                    string email = _protector.Protect(invite.Email);
+                    string company = _protector.Protect(companyId.ToString());
+                    string callbackUrl = Url.Action("ProcessInvite", "Invites", new { token, email, company }, protocol: Request.Scheme);
+                    string body = $@"{invite.Message} <br />
+                  Please join my Company. <br />
+                  Click the following link to join our team. <br />
+                  <a href=""{callbackUrl}"">COLLABORATE</a>";
+                    string destination = invite.Email;
+                    string subject = "The Bug Tracker Company Invite";
+                    await _emailService.SendEmailAsync(destination, subject, body);
+                    // Create record in the Invites table
+                    invite.CompanyToken = guid;
+                    invite.CompanyId = companyId;
+                    invite.InviteDate = DateTimeOffset.Now;
+                    invite.InvitorId = _userManager.GetUserId(User);
+                    invite.IsValid = true;
+
+                    await _inviteService.AddNewInviteAsync(invite);
+                    return RedirectToAction("Dashboard", "Home", new { swalMessage = "Invite Sent!" });
+                }
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", invite.CompanyId);
-            ViewData["InviteeId"] = new SelectList(_context.Users, "Id", "Id", invite.InviteeId);
-            ViewData["InvitorId"] = new SelectList(_context.Users, "Id", "Id", invite.InvitorId);
+            
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", invite.ProjectId);
             return View(invite);
         }

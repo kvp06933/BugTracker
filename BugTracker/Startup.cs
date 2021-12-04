@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +51,12 @@ namespace BugTracker
             services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
             services.AddScoped<IBTProjectService, BTProjectService>();
             services.AddScoped<IBTTicketService, BTTicketService>();
+            services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
             services.AddScoped<IBTLookupService, BTLookupService>();
             services.AddScoped<IBTFileService, BTFileService>();
+            services.AddScoped<IEmailSender, BTEmailService>();
+            services.AddScoped<IBTInviteService, BTInviteService>();
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddControllersWithViews();
         }
 

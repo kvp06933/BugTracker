@@ -1,7 +1,14 @@
 ﻿@model BugTracker.Models.Project
+@using BugTracker.Models.Enums
+@using BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
 
+@inject UserManager<BTUser> UserManager
+@inject IBTProjectService ProjectService
 @{
     ViewData["Title"] = "Details";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.Id);
 }
 
 <h1>Details</h1>
@@ -39,8 +46,8 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             <ul class=" list-unstyled basic-list">
-                                <li>Start Date: <span class="">@Model.StartDate.Value.ToString("dd MMM, yyy")</span></li>
-                                <li>Deadline: <span class="">@Model.EndDate.Value.ToString("dd MMM, yyy")</span></li>
+                                <li>Start Date: <span class="">@Model.StartDate.Value.ToString("MM/dd/yy")</span></li>
+                                <li>Deadline: <span class="">@Model.EndDate.Value.ToString("MM/dd/yy")</span></li>
                                 <li>Priority: <span class="">@Model.ProjectPriority?.Name</span></li>
                                 @* if() logic *@
                                 @if (today < end && today >= start)
@@ -66,7 +73,35 @@
                         <div class="body" style="overflow-y:auto;height:300px;">
                             [Project Manager]
                             @* if() logic for Avatar/Default etc *@
-
+                            @if (projectManager != null)
+                            {
+                        <div>
+                            @if (projectManager.ImageFile != null)
+                            {
+                        <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.ImageFile))" alt=""> }
+                                        else
+                                        {
+                        <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="">}
+                            <div>
+                                <h5>@projectManager.FullName</h5>
+                                <span>@projectManager.Email</span>
+                                <p class="text-muted m-b-0">Project Manager</p>
+                                @if (User.IsInRole(nameof(BTRoles.Admin)) || (btUser.Id == projectManager.Id))
+                                {
+                        <a class="btn btn-xs alert-primary" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-id="@Model.Id">Manage Team</a>}
+                            </div>
+                        </div> }
+                                    else
+                                    {
+                        <div>
+                            <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="">
+                            <div class="wid-u-info">
+                                <h5 class="text-muted m-b-0">Not Assigned</h5>
+                                @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                {
+                        <span><a asp-action="AssignProjectManager" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>}
+                            </div>
+                        </div>}
                         </div>
                     </div>
                 </div>
@@ -83,6 +118,24 @@
 
                                 [Project Members]
                                 @* Logic for avatars *@
+                                @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id))
+                                {
+                            <li class="">
+                                <a href="">
+                                    <div class="media">
+                                        @if (member.ImageFile != null)
+                                        {
+                            <img class="" src="data:image/*;base64,@(Convert.ToBase64String(member.ImageFile))" alt="" /> }
+                                            else
+                                            {
+                            <img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />                }
+                                    </div>
+                                </a>
+                                <div class="">
+                                    <span class="">@member.FullName</span>
+                                    <span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
+                                </div>
+                            </li>}
                             </ul>
 
                         </div>
@@ -114,14 +167,54 @@
                             <div class="table-responsive" style="overflow-y:auto;height:600px;">
                                 <table class="table table-hover">
                                     <thead class="">
-                                        <tr>
+                                        
                                             @* Table header *@
-                                            [Ticket Table header]
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Developer</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
                                         </tr>
+                                        
                                     </thead>
                                     <tbody>
                                         @* Table body *@
-                                        [Ticket Table body]
+                                        @foreach (var item in Model.Tickets)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Title)
+                                                </td>
+
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.DeveloperUser.FullName);
+                                                </td>
+
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                                                </td>
+                                               
+                                                
+                                                
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                                </td>
+                                                
+                                                <td>
+                                                    @item.Created.Date.ToString("MM.dd.yyyy")
+                                                </td>
+                                                
+                                                
+                                                
+                                                <td>
+                                                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>

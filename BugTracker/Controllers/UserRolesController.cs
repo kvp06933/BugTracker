@@ -66,11 +66,11 @@ namespace BugTracker.Controllers
             //Grab the selected role
             string userRole = member.SelectedRoles.FirstOrDefault();
             //Remove User from their roles
-            if (await _rolesService.RemoveUserFromRolesAsync(btUser, roles))
+            if (!string.IsNullOrEmpty(userRole))
             {
 
 
-                if (!string.IsNullOrEmpty(userRole))
+                if (await _rolesService.RemoveUserFromRolesAsync(btUser, roles))
                 {
                     //Add User to the new role
                     await _rolesService.AddUserToRoleAsync(btUser, userRole);

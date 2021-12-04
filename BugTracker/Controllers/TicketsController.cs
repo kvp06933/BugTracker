@@ -21,13 +21,18 @@ namespace BugTracker.Controllers
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTLookupService _lookupService;
         private readonly IBTProjectService _projectService;
-        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTLookupService lookupService, IBTProjectService projectService)
+        private readonly IBTFileService _fileService;
+        private readonly IBTTicketHistoryService _ticketHistoryService;
+
+        public TicketsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager, IBTLookupService lookupService, IBTProjectService projectService, IBTFileService fileService, IBTTicketHistoryService ticketHistoryService)
         {
             _context = context;
             _ticketService = ticketService;
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
+            _fileService = fileService;
+            _ticketHistoryService = ticketHistoryService;
         }
 
         // GET: Tickets
@@ -42,14 +47,14 @@ namespace BugTracker.Controllers
         {
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
-            List<Ticket> model = await _ticketService.GetTicketsByUserIdAsync(userId,companyId);
+            List<Ticket> model = await _ticketService.GetTicketsByUserIdAsync(userId, companyId);
             return View(model);
         }
         // GET: All Tickets
         public async Task<IActionResult> AllTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
-            List<Ticket> model = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
+            List<Ticket> model = (await _ticketService.GetAllTicketsByCompanyAsync(companyId)).OrderByDescending(p => p.Updated).ThenByDescending(p => p.Created).ToList(); 
             return View(model);
         }
         // GET: Archived Tickets
@@ -126,6 +131,8 @@ namespace BugTracker.Controllers
                     await _ticketService.AddNewTicketAsync(ticket);
 
                     //TODO: Ticket History
+                    Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+                    await _ticketHistoryService.AddHistoryAsync(null, newTicket, userId);
                     //TODO: Ticket Notification
                 }
                 catch (Exception)
@@ -168,7 +175,7 @@ namespace BugTracker.Controllers
             }
             
             
-            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Id", ticket.TicketPriorityId);
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketStatus"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
@@ -179,7 +186,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,Updated,Archived,ArchivedByProject,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,OwnerUserId,DeveloperUserId")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,ArchivedByProject,TicketTypeId,TicketStatusId,TicketPriorityId")] Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -205,12 +212,12 @@ namespace BugTracker.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AllTickets));
             }
             
-            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Id", ticket.TicketTypeId);
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
+            ViewData["TicketStatusId"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
+            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
