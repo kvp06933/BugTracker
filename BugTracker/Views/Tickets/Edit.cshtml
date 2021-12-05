@@ -42,6 +42,10 @@
                 <label asp-for="TicketStatusId" class="control-label"></label>
                 <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId">
                     <option></option>
+                    <option>New</option>
+                    <option>Development</option>
+                    <option>Testing</option>
+                    <option>Resolved</option>
                 </select>
                 <span asp-validation-for="TicketStatusId" class="text-danger"></span>
             </div>
