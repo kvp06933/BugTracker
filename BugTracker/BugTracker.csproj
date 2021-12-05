@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\assets\images\vito-placeholder-img\" />
     <Folder Include="wwwroot\img\contenttype\" />
   </ItemGroup>
 
