@@ -155,6 +155,7 @@ namespace BugTracker.Controllers
 
 
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
+            
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
             return View(ticket);
         }
@@ -186,7 +187,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,ArchivedByProject,TicketTypeId,TicketStatusId,TicketPriorityId")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,Archived,ArchivedByProject,TicketTypeId,TicketStatusId,TicketPriorityId")] Ticket ticket)
         {
             if (id != ticket.Id)
             {

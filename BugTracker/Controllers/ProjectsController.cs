@@ -84,13 +84,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            // Remember that the _context should not be used directly in the controller so....     
-
-            // Edit the following code to use the service layer. 
-            // Your goal is to return the 'project' from the databse
-            // with the Id equal to the parameter passed in.
-
-            // This is the only modification necessary for this method/action.     
+                 
 
             int companyId = User.Identity.GetCompanyId().Value;
 
