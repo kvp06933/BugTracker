@@ -35,6 +35,7 @@ namespace BugTracker.Models
         public byte[] ImageFile { get; set; }
         public string ImageType { get; set; }
 
+        //TODO: Is non-nullable companyId an issue?
         public int CompanyId { get; set; }
 
         public virtual Company Company { get; set; }

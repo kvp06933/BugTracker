@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using BugTracker.Models.Enums
 @inject SignInManager<BTUser> SignInManager
 
 <!DOCTYPE html>
@@ -55,7 +56,13 @@
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="Index">Index</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
+                                    @if(User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                     {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets">Unassigned Tickets</a></li>
+                                     }
+                                    
+                                    
                                 </ul>
                             </li>
                             <li>
