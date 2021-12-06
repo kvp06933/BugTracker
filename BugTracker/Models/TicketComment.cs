@@ -16,7 +16,7 @@ namespace BugTracker.Models
         public int TicketId { get; set; }
 
         [DisplayName("Team Member")]
-        [Required]
+        
         public string UserId { get; set; }
 
         [DisplayName("Member Comment")]

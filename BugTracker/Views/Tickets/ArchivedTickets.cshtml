@@ -82,18 +82,18 @@
                 @Html.DisplayFor(modelItem => item.Project.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketType.Id)
+                @Html.DisplayFor(modelItem => item.TicketType.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketPriority.Id)
+                @Html.DisplayFor(modelItem => item.TicketPriority.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TicketStatus.Id)
+                @Html.DisplayFor(modelItem => item.TicketStatus.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
             </td>
         </tr>
 }

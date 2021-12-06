@@ -1,18 +1,36 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@model BugTracker.Models.Ticket
+@using BugTracker.Models.Enums
+@using Microsoft.AspNetCore.Identity
+@using BugTracker.Services.Interfaces
 
-
-@model BugTracker.Models.Ticket
+@inject IBTProjectService ProjectService
+@inject IBTFileService BTFileService
 @inject UserManager<BTUser> UserManager
+
+
 @{
     ViewData["Title"] = "Details";
     BTUser btUser = await UserManager.GetUserAsync(User);
+    BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
 }
 
 <h1>Details</h1>
 
 <div>
     <h1>Ticket Details</h1>
-
+    @if (!string.IsNullOrEmpty(Model.DeveloperUserId))
+    {
+        <a href="javascript:void(0);">
+            @if (Model.DeveloperUser?.ImageFile != null)
+            {
+                <img class="media-object " src="data:image/*;base64,@(Convert.ToBase64String(btUser.ImageFile))" alt=""> }
+            else
+            {
+                <img class="media-object " src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px;height:30px">}
+        </a>
+        <span class="text-muted" style="font-size:x-small;">
+            Developer:  <strong>@Model.DeveloperUser.FullName</strong>
+        </span>}
     <div>
         <div classxfont-weighteighteightgetainer-fluid">
             <div class="row gy-2">
@@ -38,7 +56,7 @@
                                         }
 
                                         @*Variable from razor logic*@
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: @percent">
                                             @*Variable from razor logic*@
                                             <span class="progress-value">@percent%</span>
                                         </div>
@@ -75,6 +93,20 @@
 
                                     @*Form and Logic for authorized users to add comments*@
                                     <form class="form-horizontal form-bordered" asp-action="AddTicketComment" asp-controller="Tickets" method="post">
+                                        <input type="hidden" asp-for="Id" name="TicketId" />
+                                        <input type="hidden" name="UserId" asp-for="@(UserManager.GetUserId(User))"/>
+                                        @if (Model.DeveloperUserId == btUser.Id || Model.OwnerUserId == btUser.Id || projectManager?.Id == btUser.Id || User.IsInRole(nameof(BTRoles.Admin)))
+                                        {
+                                            <div class="form-group">
+                                                <textarea asp-for="@(new TicketComment().Comment)" rows="8" class="form-control" required placeholder="Add comment ..." ></textarea>
+                                            </div>
+                                            <input type="submit" class="btn btn-sm btn-primary" value="Submit"/>
+                                            }
+                                        else
+                                        {
+                                            <div class="form-group">
+                                                <textarea disabled asp-for="@(new TicketComment().Comment)" rows="8" class="form-control" required placeholder="Add comment ..."></textarea>
+                                            </div>}
                                     </form>
                                     <hr />
                                     <h6>Comments</h6>
@@ -116,14 +148,48 @@
                                     <h2>Attachments</h2>
                                 </div>
                                 <div class="card-body" style="overflow-y:auto;height:300px;">
-
-                                    @* Refer to the Ticket Attachments document for this section *@
-
-                                    @* Ticket attachments part 1 here *@
-
+                                    <div class="row clearfix">
+                                        <div>
+                                            <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <input type="hidden" asp-for="@Model.Id" name="TicketId">
+                                                <div class="media-body ml-3">
+                                                    <label>
+                                                        Description
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
+                                                    </label><br />
+                                                    <label class="btn btn-outline-primary btn-sm">
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().Attachment" type="file" class="form-control-file" />
+                                                    </label>
+                                                    <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
 
                                     @* Ticket attachments part 2 here *@
-
+                                    <hr />
+                                    <h6>Attachments</h6>
+                                    <div class="container">
+                                        <div class="row">
+                                            @foreach (TicketAttachment item in Model.Attachments)
+                                            {
+                                                <div class="col col-sm-2">
+                                                    <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
+                                                        <div class="icon">
+                                                            <img src="@BTFileService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
+                                                        </div>
+                                                    </a>
+                                                    <div style="font-size:x-small">
+                                                        <div class="file-name">
+                                                            <strong>@item.Description</strong>
+                                                        </div>
+                                                        <small>Size: @BTFileService.FormatFileSize(item.FileData.Length) </small>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                 </div>
