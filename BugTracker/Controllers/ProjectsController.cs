@@ -21,16 +21,16 @@ namespace BugTracker.Controllers
     [Authorize]
     public class ProjectsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTProjectService _projectService;
         private readonly IBTRolesService _rolesService;
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService)
+        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService)
         {
-            _context = context;
+            
             _userManager = userManager;
             _projectService = projectService;
             _rolesService = rolesService;
@@ -221,18 +221,16 @@ namespace BugTracker.Controllers
             return View(model.Project);
         }
 
-        // GET: Projects/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Projects/Archive/5
+        public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            int companyId = User.Identity.GetCompanyId().Value;
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
             if (project == null)
             {
                 return NotFound();
@@ -241,15 +239,19 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Projects/Archive/5
+        [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> ArchiveConfirmed(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            int companyId = User.Identity.GetCompanyId().Value;
+            Project project = await _projectService.GetProjectByIdAsync(id, companyId);
+
+            project.Archived = true;
+
+            await _projectService.ArchiveProjectAsync(project);
+
+            return RedirectToAction(nameof(AllProjects));
         }
 
         private async Task<bool> ProjectExists(int id)
