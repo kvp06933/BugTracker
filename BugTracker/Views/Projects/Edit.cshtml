@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Project.Id" />
             <input type="hidden" asp-for="Project.Created" />
@@ -48,7 +48,7 @@
             <div class="form-group">
                 <label class="control-label">Project Image</label>
                 <input asp-for="Project.Image" class="form-control" type="file" accept=".png,.jpg,.jpeg,.gif"
-                       onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0]" />
+                       onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0])" />
                 <span asp-validation-for="Project.Image" class="text-danger"></span>
             </div>
             <label>Image Preview</label>

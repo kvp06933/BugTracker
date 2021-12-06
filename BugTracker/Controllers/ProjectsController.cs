@@ -141,7 +141,7 @@ namespace BugTracker.Controllers
                 }
 
                 //Add selected members
-                foreach (string member in memberIds)
+                foreach (string member in model.SelectedUsers)
                 {
                     await _projectService.AddUserToProjectAsync(member, model.Project.Id);
                 }

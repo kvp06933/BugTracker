@@ -68,7 +68,15 @@ namespace BugTracker.Controllers
             List<Ticket> model = await _ticketService.GetArchivedTicketsAsync(companyId);
             return View(model);
         }
+        // GET: Unassigned Projects
+        public async Task<IActionResult> UnassignedTickets()
+        {
+            //Get Current User Id
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Ticket> model = await _ticketService.GetUnassignedTicketsAsync(companyId);
 
+            return View(model);
+        }
         [Authorize(Roles="Admin,ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignDeveloper(int? ticketId)
@@ -216,7 +224,7 @@ namespace BugTracker.Controllers
             
             
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
-            ViewData["TicketStatus"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
+            ViewData["TicketStatusId"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
@@ -352,7 +360,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
+        public async Task<IActionResult> AddTicketAttachment([Bind("Id,Attachment,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
 
