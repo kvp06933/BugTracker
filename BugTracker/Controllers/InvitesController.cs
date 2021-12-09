@@ -110,7 +110,30 @@ namespace BugTracker.Controllers
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", invite.ProjectId);
             return View(invite);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> ProcessInvite(string token, string email, string company)
+        {
+            if (token == null)
+            {
+                return NotFound();
+            }
+            Guid companyToken = Guid.Parse(_protector.Unprotect(token));
+            string inviteeEmail = _protector.Unprotect(email);
+            int companyId = int.Parse(_protector.Unprotect(company));
+            try
+            {
+                Invite invite = await _inviteService.GetInviteAsync(companyToken, inviteeEmail, companyId);
+                if (invite != null)
+                {
+                    return View(invite);
+                }
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         // GET: Invites/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

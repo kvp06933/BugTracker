@@ -56,6 +56,7 @@ namespace BugTracker
             services.AddScoped<IBTFileService, BTFileService>();
             services.AddScoped<IEmailSender, BTEmailService>();
             services.AddScoped<IBTInviteService, BTInviteService>();
+            services.AddScoped<IBTNotificationService, BTNotificationService>();
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddControllersWithViews();
         }
