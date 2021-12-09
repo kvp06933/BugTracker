@@ -73,15 +73,36 @@ namespace BugTracker.Data
             await SeedDefaultTicketStatusAsync(dbContextSvc);
             await SeedDefaultTicketPriorityAsync(dbContextSvc);
             await SeedDefaultTicketTypeAsync(dbContextSvc);
-            //await SeedNotificationTypes(dbContextSvc);
+            await SeedNotificationTypes(dbContextSvc);
             await SeedDefautProjectsAsync(dbContextSvc);
             await SeedDefautTicketsAsync(dbContextSvc);
         }
 
-        //private static Task SeedNotificationTypes(ApplicationDbContext dbContextSvc)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        private static async Task SeedNotificationTypes(ApplicationDbContext dbContextSvc)
+        {
+            try
+            {
+                IList<Models.NotificationType> notificationTypes = new List<NotificationType>() {
+                                                    new NotificationType() { Name = BTNotificationTypes.Ticket.ToString() },
+                                                    new NotificationType() { Name = BTNotificationTypes.Project.ToString() },
+                                                    
+                                                    
+                };
+
+                var dbNotificationTypes = dbContextSvc.NotificationTypes.Select(c => c.Name).ToList();
+                await dbContextSvc.NotificationTypes.AddRangeAsync(notificationTypes.Where(c => !dbNotificationTypes.Contains(c.Name)));
+                await dbContextSvc.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Project Priorities.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+        }
 
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {

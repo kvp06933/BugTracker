@@ -126,7 +126,7 @@ namespace BugTracker.Controllers
                     Title = "Ticket Assigned",
                     Message = $"Ticket : {model.Ticket.Title}, was assigned by {btUser.FullName}",
                     SenderId = userId,
-                    RecipientId = model.Ticket.DeveloperUserId
+                    RecipientId = model.DeveloperId
                 };
 
                 await _notificationService.AddNotificationAsync(notification);

@@ -27,18 +27,20 @@ namespace BugTracker.Controllers
         private readonly IBTRolesService _rolesService;
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
+        private readonly IBTNotificationService _notificationService;
 
-        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService)
+        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService, IBTNotificationService notificationService)
         {
-            
+
             _userManager = userManager;
             _projectService = projectService;
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
-       
+
 
         // GET: My Projects
         public async Task<IActionResult> MyProjects()
