@@ -33,22 +33,30 @@ namespace BugTracker.Services
         {
             MimeMessage email = new();
 
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.To.Add(MailboxAddress.Parse(emailTo));
-            email.Subject = subject;
-
-            var builder = new BodyBuilder
+            try
             {
-                HtmlBody = htmlMessage
-            };
+                email.Sender = MailboxAddress.Parse(_mailSettings.Email);
+                email.To.Add(MailboxAddress.Parse(emailTo));
+                email.Subject = subject;
 
-            email.Body = builder.ToMessageBody();
+                var builder = new BodyBuilder
+                {
+                    HtmlBody = htmlMessage
+                };
+
+                email.Body = builder.ToMessageBody();
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                throw;
+            }
 
             try
             {
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+                smtp.Authenticate(_mailSettings.Email, _mailSettings.Password);
 
                 await smtp.SendAsync(email);
 

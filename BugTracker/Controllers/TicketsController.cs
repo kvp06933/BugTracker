@@ -27,16 +27,18 @@ namespace BugTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly IBTFileService _fileService;
         private readonly IBTTicketHistoryService _ticketHistoryService;
+        private readonly IBTNotificationService _notificationService;
 
-        public TicketsController(IBTTicketService ticketService, UserManager<BTUser> userManager, IBTLookupService lookupService, IBTProjectService projectService, IBTFileService fileService, IBTTicketHistoryService ticketHistoryService)
+        public TicketsController(IBTTicketService ticketService, UserManager<BTUser> userManager, IBTLookupService lookupService, IBTProjectService projectService, IBTFileService fileService, IBTTicketHistoryService ticketHistoryService, IBTNotificationService notificationService)
         {
-            
+
             _ticketService = ticketService;
             _userManager = userManager;
             _lookupService = lookupService;
             _projectService = projectService;
             _fileService = fileService;
             _ticketHistoryService = ticketHistoryService;
+            _notificationService = notificationService;
         }
 
         // GET: Tickets
@@ -99,8 +101,12 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
         {
+            BTUser btUser = await _userManager.GetUserAsync(User);
             if (model.DeveloperId != null)
             {
+                
+                string userId = _userManager.GetUserId(User);
+                Ticket oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket.Id);
                 try
                 {
                     await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
@@ -110,6 +116,21 @@ namespace BugTracker.Controllers
 
                     throw;
                 }
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket.Id);
+                await _ticketHistoryService.AddHistoryAsync(oldTicket, newTicket, userId);
+
+                Notification notification = new()
+                {
+                    TicketId = model.Ticket.Id,
+                    NotificationTypeId = (await _lookupService.LookupNotificationTypeId(nameof(BTNotificationTypes.Ticket))).Value,
+                    Title = "Ticket Assigned",
+                    Message = $"Ticket : {model.Ticket.Title}, was assigned by {btUser.FullName}",
+                    SenderId = userId,
+                    RecipientId = model.DeveloperId
+                };
+
+                await _notificationService.AddNotificationAsync(notification);
+                await _notificationService.SendEmailNotificationAsync(notification, "Ticket Assigned");
 
                 return RedirectToAction(nameof(Details), new { id = model.Ticket.Id });
             }
@@ -165,6 +186,7 @@ namespace BugTracker.Controllers
         {
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            BTUser btUser = await _userManager.GetUserAsync(User);
 
             if (ModelState.IsValid)
             {
@@ -180,14 +202,34 @@ namespace BugTracker.Controllers
                     
                     Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
                     await _ticketHistoryService.AddHistoryAsync(null, newTicket, userId);
-                    
+
+                    BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+                    Notification notification = new()
+                    {
+                        TicketId = ticket.Id,
+                        Title = "New Ticket Added",
+                        Message = $"New Ticket: {ticket.Title}, was created by {btUser.FullName} ",
+                        Created = DateTimeOffset.Now,
+                        SenderId = userId,
+                        RecipientId = projectManager?.Id
+                    };
+                    await _notificationService.AddNotificationAsync(notification);
+                    if(projectManager != null)
+                    {
+                        await _notificationService.SendEmailNotificationAsync(notification, $"New Ticket Added For Project: {newTicket.Project.Name}");
+                        
+                    }
+                    else
+                    {
+                        await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRoles.Admin));
+                    }
                 }
                 catch (Exception)
                 {
 
                     throw;
                 }
-                return RedirectToAction(nameof(AllTickets));
+                return RedirectToAction("Details", "Projects", new { id = ticket.ProjectId });
             }
 
             if (User.IsInRole(nameof(BTRoles.Admin)))

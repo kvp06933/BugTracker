@@ -27,18 +27,20 @@ namespace BugTracker.Controllers
         private readonly IBTRolesService _rolesService;
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
+        private readonly IBTNotificationService _notificationService;
 
-        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService)
+        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService, IBTNotificationService notificationService)
         {
-            
+
             _userManager = userManager;
             _projectService = projectService;
             _rolesService = rolesService;
             _lookupService = lookupService;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
-       
+
 
         // GET: My Projects
         public async Task<IActionResult> MyProjects()
@@ -164,6 +166,7 @@ namespace BugTracker.Controllers
             int companyId = User.Identity.GetCompanyId().Value;
 
             Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
+            
 
             if (project == null)
             {
@@ -194,6 +197,7 @@ namespace BugTracker.Controllers
         {
             if (model != null)
             {
+                BTUser btUser = await _userManager.GetUserAsync(User);
                 int companyId = User.Identity.GetCompanyId().Value;
                 try
                 {
@@ -210,6 +214,17 @@ namespace BugTracker.Controllers
                     {
                         await _projectService.AddProjectManagerAsync(model.PmId, model.Project.Id);
                     }
+
+                    Notification notification = new()
+                    {
+                        ProjectId = model.Project.Id,
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeId(nameof(BTNotificationTypes.Project))).Value,
+                        Title = "Project Created",
+                        Message = $"Project : {model.Project.Name}, was assigned by {btUser.FullName}",
+                        SenderId = btUser.Id,
+
+
+                    };
                     return RedirectToAction(nameof(AllProjects));
                 }
                 catch (Exception)
