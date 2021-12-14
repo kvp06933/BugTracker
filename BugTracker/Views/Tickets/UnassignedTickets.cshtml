@@ -86,7 +86,7 @@
                     @Html.DisplayFor(modelItem => item.TicketStatus.Name)
                 </td>
                 <td>
-                    <a asp-action="AssignDeveloper" asp-route-projectId="@item.Id">Assign Developer</a> |
+                    <a asp-action="AssignDeveloper" asp-route-ticketId="@item.Id">Assign Developer</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
                 </td>
