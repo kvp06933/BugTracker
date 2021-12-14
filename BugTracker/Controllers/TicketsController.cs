@@ -206,6 +206,7 @@ namespace BugTracker.Controllers
                     BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
                     Notification notification = new()
                     {
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeId(nameof(BTNotificationTypes.Ticket))).Value,
                         TicketId = ticket.Id,
                         Title = "New Ticket Added",
                         Message = $"New Ticket: {ticket.Title}, was created by {btUser.FullName} ",
@@ -250,6 +251,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

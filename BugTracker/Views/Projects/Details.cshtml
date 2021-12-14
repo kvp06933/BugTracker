@@ -73,7 +73,7 @@
                             <hr />
                         </div>
                         <div class="body" style="overflow-y:auto;height:300px;">
-                            [Project Manager]
+                            
                             @* if() logic for Avatar/Default etc *@
                             @if (projectManager != null)
                             {
@@ -101,7 +101,7 @@
                                         <h5 class="text-muted m-b-0">Not Assigned</h5>
                                         @if (User.IsInRole(nameof(BTRoles.Admin)))
                                         {
-                                            <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-id="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>}
+                                            <span><a asp-action="AssignPM" asp-controller="Projects" asp-route-projectId="@Model.Id" class="btn btn-xs btn-outline-info">Assign PM</a></span>}
                                     </div>
                                 </div>}
                         </div>
@@ -118,7 +118,7 @@
                         <div class="body" style="overflow-y:auto;height:300px;">
                             <ul class="right_chat list-unstyled mb-0">
 
-                                [Project Members]
+                                
                                 @* Logic for avatars *@
                                 @foreach (BTUser member in await ProjectService.GetAllProjectMembersExceptPMAsync(Model.Id))
                                 {
@@ -214,9 +214,7 @@
                                                     <td><a class="btn btn-primary btn-small" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-ticketId="@ticket.Id">Assign Developer</a></td>
                                                 }
 
-                                                <td>
-                                                    @ticket.DeveloperUser?.FullName;
-                                                </td>
+                                                
 
                                                 <td>
                                                     @Html.DisplayFor(modelItem => ticket.TicketStatus.Name)
