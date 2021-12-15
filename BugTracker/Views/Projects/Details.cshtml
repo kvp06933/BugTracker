@@ -5,11 +5,13 @@
 
 @inject UserManager<BTUser> UserManager
 @inject IBTProjectService ProjectService
+@inject IBTTicketService TicketService
 @inject IBTTicketHistoryService HistoryService
 @{
     ViewData["Title"] = "Details";
     BTUser btUser = await UserManager.GetUserAsync(User);
     BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.Id);
+    //var ticket = await TicketService.GetAllTicketsByCompanyAsync(btUser.CompanyId);
 
 }
 
@@ -172,8 +174,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col">
-                <div class="mt-5 bg-secondary">
+            
                     <div class="card m-1 p-2">
                         <div class="header">
                             <h2>Tickets</h2>
@@ -196,7 +197,7 @@
                                     </thead>
                                     <tbody>
                                         @* Table body *@
-                                        @foreach (Ticket ticket in Model.Tickets)
+                                        @foreach (var ticket in Model.Tickets.OrderByDescending(d => d.Created))
                                         {
                                             <tr>
                                                 <td>
@@ -246,8 +247,7 @@
                         </div>
                     </div>
 
-                </div>
-            </div>
+               
         </div>
     </div>
 </div>
