@@ -6,51 +6,109 @@
     Layout = "/Views/Shared/_LoginLayout.cshtml";
 }
 
-
+@*<div class="form-wrapper">
+    <div class="container">
+        <div class="card">
+            <div class="row g-0">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="d-block d-lg-none text-center text-lg-start">
+                                <img width="120" src="../../assets/images/logo.svg" alt="logo">
+                            </div>
+                            <div class="my-5 text-center text-lg-start">
+                                <h1 class="display-8">Sign In</h1>
+                                <p class="text-muted">Sign in to Vetra to continue</p>
+                            </div>
+                            <form class="mb-5">
+                                <div class="mb-3">
+                                    <input type="email" asp-for=" Input.Email" class="form-control" placeholder="Enter email" autofocus
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="password" asp-for="Input.Password" class="form-control" placeholder="Enter password"
+                                           required>
+                                </div>
+                                <div class="text-center text-lg-start">
+                                    <p class="small">Can't access your account? <a href="#">Reset your password now</a>.</p>
+                                    <button class="btn btn-primary">Sign In</button>
+                                </div>
+                            </form>
+                            
+                            <p class="text-center d-block d-lg-none mt-5 mt-lg-0">
+                                Don't have an account? <a href="#">Sign up</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col d-none d-lg-flex border-start align-items-center justify-content-between flex-column text-center">
+                    <div class="logo">
+                        <img width="120" src="../../assets/images/logo.svg" alt="logo">
+                    </div>
+                    <div>
+                        <h3 class="fw-bold">Welcome to Vetra!</h3>
+                        <p class="lead my-5">If you don't have an account, would you like to register right now?</p>
+                        <a href="#" class="btn btn-primary">Sign Up</a>
+                    </div>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">Terms & Conditions</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
     <!-- page-wrapper Start-->
-    <section>
-        <div class="container-fluid p-0">
-            <div class="row">
-                <div class="col-12">
-                    <div class="login-card">
-                        <form class="theme-form login-form" id="account" method="post">
-                            <h4>Login</h4>
-                            <h6>Welcome back! Log in to your account.</h6>
-                            <div class="form-group">
-                                <label>Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="icon-email"></i></span>
-                                    <input class="form-control" asp-for=" Input.Email" required="" placeholder="Test@gmail.com">
+    <section class="form-wrapper">
+        <div class="container">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col">
+                        <div class="row">
+                            <form class="theme-form login-form" id="account" method="post">
+                                <h4>Login</h4>
+                                <h6>Welcome back! Log in to your account.</h6>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="icon-email"></i></span>
+                                        <input class="form-control" asp-for=" Input.Email" required="" placeholder="Test@gmail.com">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="icon-lock"></i></span>
-                                    <input class="form-control" asp-for="Input.Password" required="" placeholder="*********">
-                                    <div class="show-hide"><span class="show"></span></div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="icon-lock"></i></span>
+                                        <input class="form-control" asp-for="Input.Password" required="" placeholder="*********">
+                                        <div class="show-hide"><span class="show"></span></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <input id="checkbox1" type="checkbox">
-                                    <label class="text-muted" for="checkbox1">Remember password</label>
-                                </div><a class="link" href="forget-password.html">Forgot password?</a>
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="submit">Sign in</button>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label asp-for="Input.RememberMe">
-                                        <input asp-for="Input.RememberMe" />
-                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                    </label>
+
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-block" type="submit">Sign in</button>
                                 </div>
+
+                            </form>
+                            <div class="mb-1 text-center">
+                                <form class="" id="account" method="post">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-12 btn-block">
+                                                <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoAdminEmail">Demo Admin</button>
+                                                <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoPMEmail">Demo PM</button>
+                                                <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoDevEmail">Demo Developer</button>
+                                                <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoSubEmail">Demo Submitter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                           
-                            <p>Don't have account?<a class="ms-2" asp-area="Identity" asp-page="/Account/Register">Create Account</a></p>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
