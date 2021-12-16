@@ -47,7 +47,17 @@ namespace BugTracker.Controllers
         {
             //Get Current User Id
             string userId = _userManager.GetUserId(User);
-            List<Project> model = await _projectService.GetUserProjectsAsync(userId);
+            int companyId = User.Identity.GetCompanyId().Value;
+            List<Project> model = new();
+            if (User.IsInRole(nameof(BTRoles.Admin)))
+            {
+                model = await _projectService.GetAllProjectsByCompanyAsync(companyId);
+            }
+            else
+            {
+                model = await _projectService.GetUserProjectsAsync(userId);
+            }
+            
 
             return View(model);
         }

@@ -52,10 +52,12 @@
                 <span asp-validation-for="Project.Image" class="text-danger"></span>
             </div>
             <label>Image Preview</label>
-            @if (Model.Project?.ImageData != null)
-            {
-                <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px; height:80px" src="data:image/*;base64,@{ Convert.ToBase64String(Model.Project.ImageData); } ">
-            }
+            
+                @if (Model.Project?.ImageData != null)
+                {
+                    <img style="width:60px;height:60px" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageData))" alt="" />
+                }
+            
             else
             {
                 <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="">
