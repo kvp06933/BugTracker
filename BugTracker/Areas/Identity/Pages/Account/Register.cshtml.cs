@@ -111,15 +111,13 @@ namespace BugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                byte[] image = await _fileService.ConvertFileToByteArrayAsync(Input.Image);
+                
                 //Create new company
                 Company company = new()
                 {
                     Name = Input.CompanyName,
                     Description = Input.CompanyDescription,
-                    ImageType = Input.Image.ContentType,
-                    ImageName = Input.Image.FileName,
-                    ImageData = image
+                    
                 };
                 
                 await _context.AddAsync(company);
