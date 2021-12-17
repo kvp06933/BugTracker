@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using BugTracker.Services.Interfaces
+@using BugTracker.Models.Enums 
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
 @inject IBTCompanyInfoService CompanyService
@@ -21,7 +22,7 @@
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
     <!-- Bootstrap icons -->
     <link rel="stylesheet" href="~/dist/icons/bootstrap-icons-1.4.0/bootstrap-icons.min.css" type="text/css">
     <!-- Bootstrap Docs -->
@@ -556,9 +557,9 @@
 
             </div>
             <ul>
-               
+
                 <li>
-                    <a  asp-area="" asp-controller="Home" asp-action="Dashboard" class="active">
+                    <a asp-area="" asp-controller="Home" asp-action="Dashboard" class="active">
                         <span class="nav-link-icon">
                             <i class="bi bi-bar-chart"></i>
                         </span>
@@ -572,7 +573,7 @@
                         </span>
                         <span>Company</span>
                     </a>
-                    
+
                 </li>
                 <li>
                     <a href="#">
@@ -585,8 +586,11 @@
                         <li>
                             <a asp-controller="Projects" asp-action="Create">New project...</a>
                         </li>
-                        
-                        <li><a asp-area="" asp-controller="Projects" asp-action="MyProjects">My Projects</a></li>
+                        @if (!User.IsInRole(nameof(BTRoles.Admin)))
+                        {
+                            <li><a asp-area="" asp-controller="Projects" asp-action="MyProjects">My Projects</a></li>
+                        }
+
                         <li><a asp-area="" asp-controller="Projects" asp-action="AllProjects">All Projects</a></li>
                         <li><a asp-area="" asp-controller="Projects" asp-action="ArchivedProjects">Archived Projects</a></li>
                     </ul>
@@ -600,15 +604,19 @@
                     </a>
                     <ul>
                         <li><a asp-area="" asp-controller="Tickets" asp-action="Create">New ticket...</a></li>
-                        
+
                         <li><a asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a></li>
                         <li><a asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
                         <li><a asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
                     </ul>
                 </li>
-                <li><a asp-area="" asp-controller="Invites" asp-action="Create"><span class="nav-link-icon">
-    <i class="bi bi-receipt"></i>
-</span><span>Invite</span></a></li>
+                <li>
+                    <a asp-area="" asp-controller="Invites" asp-action="Create">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-receipt"></i>
+                        </span><span>Invite</span>
+                    </a>
+                </li>
                 <li>
                     <a asp-area="" asp-controller="Notifications" asp-action="Index">
                         <span class="nav-link-icon">
@@ -616,9 +624,20 @@
                         </span>
                         <span>Notifications</span>
                     </a>
-                    
+
                 </li>
-               </ul> 
+                @if (User.IsInRole(nameof(BTRoles.Admin)))
+                {
+            <li>
+                <a asp-area="" asp-controller="UserRoles" asp-action="ManageUserRoles">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Manage User Roles</span>
+                </a>
+            </li>
+                }
+                </ul> 
         </div>
     </div>
     <!-- ./  menu -->
@@ -638,19 +657,7 @@
                 <img width="100" src="~/assets/images/logo.svg" alt="logo">
             </a>
             <!-- ./ Logo -->
-            <div class="page-title">Overview</div>
-            <form class="search-form">
-                <div class="input-group">
-                    <button class="btn btn-outline-light" type="button" id="button-addon1">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    <input type="text" class="form-control" placeholder="Search..."
-                           aria-label="Example text with button addon" aria-describedby="button-addon1">
-                    <a href="#" class="btn btn-outline-light close-header-search-bar">
-                        <i class="bi bi-x"></i>
-                    </a>
-                </div>
-            </form>
+            
             <div class="header-bar ms-auto">
                 <ul class="navbar-nav justify-content-end">
                     <li class="nav-item">
@@ -708,8 +715,8 @@
 
     <!-- Main Javascript file -->
     <script src="~/dist/js/app.min.js"></script>
-
-
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    
 
                        
 

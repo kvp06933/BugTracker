@@ -1,9 +1,14 @@
-﻿@model IEnumerable<BugTracker.Models.ViewModels.ManageUserRolesViewModel>
-
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<BTUser> UserManager
+@model IEnumerable<BugTracker.Models.ViewModels.ManageUserRolesViewModel>
+@{
+    string userId = UserManager.GetUserId(User);
+}
 
 <div class="row">
+    
     @foreach (var member in Model)
-     {
+    {
         <div class="card col-6" style="margin:2px">
             <div class="card-body">
                 <h2 class="m-t-0 h3"><b>Assign Roles to @member.BTUser.FullName</b></h2>
@@ -31,5 +36,5 @@
                 </form>
             </div>
         </div>
-     }
+    }
 </div>
