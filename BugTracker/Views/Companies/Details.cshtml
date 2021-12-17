@@ -25,23 +25,15 @@
                 <dd class="col-sm-10">
                     @Html.DisplayFor(model => model.Description)
                 </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.ImageName)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.ImageName)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.ImageType)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.ImageType)
-                </dd>
+                
                 <dt class="col-sm-2">
                     @Html.DisplayNameFor(model => model.ImageData)
                 </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.ImageData)
+                <dd>
+                    @if (Model.ImageData != null)
+                    {
+                        <img style="width:60px;height:60px" src="data:image/*;base64,@(Convert.ToBase64String(Model.ImageData))" alt="" />
+                    }
                 </dd>
             </dl>
         </div>
@@ -49,6 +41,6 @@
     
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+     
+    <a asp-controller="Home" asp-action="Dashboard">Back to Dashboard</a>
 </div>

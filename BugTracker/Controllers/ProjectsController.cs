@@ -28,8 +28,8 @@ namespace BugTracker.Controllers
         private readonly IBTLookupService _lookupService;
         private readonly IBTFileService _fileService;
         private readonly IBTNotificationService _notificationService;
-
-        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService, IBTNotificationService notificationService)
+        private readonly IBTTicketService _ticketService;
+        public ProjectsController(UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTRolesService rolesService, IBTFileService fileService, IBTNotificationService notificationService, IBTTicketService ticketService)
         {
 
             _userManager = userManager;
@@ -38,6 +38,7 @@ namespace BugTracker.Controllers
             _lookupService = lookupService;
             _fileService = fileService;
             _notificationService = notificationService;
+            _ticketService = ticketService;
         }
 
 
@@ -47,19 +48,9 @@ namespace BugTracker.Controllers
         {
             //Get Current User Id
             string userId = _userManager.GetUserId(User);
-            int companyId = User.Identity.GetCompanyId().Value;
-            List<Project> model = new();
-            if (User.IsInRole(nameof(BTRoles.Admin)))
-            {
-                model = await _projectService.GetAllProjectsByCompanyAsync(companyId);
-            }
-            else
-            {
-                model = await _projectService.GetUserProjectsAsync(userId);
-            }
-            
-
-            return View(model);
+            List<Project>  model = await _projectService.GetUserProjectsAsync(userId);        
+            return View(model);  
+             
         }
 
         // GET: All Projects
@@ -187,6 +178,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Create()
         {
             //Get company Id
@@ -202,6 +194,7 @@ namespace BugTracker.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin,ProjectManager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddProjectWithPMViewModel model)
         {
@@ -251,6 +244,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -280,6 +274,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Edit(AddProjectWithPMViewModel model)
         {
             if (model != null)
@@ -322,6 +317,8 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Archive/5
+        [HttpGet]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -342,19 +339,24 @@ namespace BugTracker.Controllers
         // POST: Projects/Archive/5
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> ArchiveConfirmed(int id)
         {
             int companyId = User.Identity.GetCompanyId().Value;
+            
             Project project = await _projectService.GetProjectByIdAsync(id, companyId);
-
+            Ticket ticket = await _ticketService.GetTicketByIdAsync(id);
             project.Archived = true;
-
+            ticket.ArchivedByProject = true;
+            ticket.Archived = true;
             await _projectService.ArchiveProjectAsync(project);
 
             return RedirectToAction(nameof(AllProjects));
         }
 
         // GET: Projects/Resotre/5
+        [HttpGet]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null)
@@ -375,6 +377,7 @@ namespace BugTracker.Controllers
         // POST: Projects/Resotre/5
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,ProjectManager")]
         public async Task<IActionResult> RestoreConfirmed(int id)
         {
             int companyId = User.Identity.GetCompanyId().Value;

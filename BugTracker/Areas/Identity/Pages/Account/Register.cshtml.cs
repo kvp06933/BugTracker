@@ -16,6 +16,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using BugTracker.Services.Interfaces;
 using BugTracker.Data;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
+using BugTracker.Models.Enums;
+using System.ComponentModel;
 
 namespace BugTracker.Areas.Identity.Pages.Account
 {
@@ -27,18 +31,21 @@ namespace BugTracker.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
-
+        private readonly IBTRolesService _rolesService;
+        private readonly IBTFileService _fileService;
         public RegisterModel(
             UserManager<BTUser> userManager,
             SignInManager<BTUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, ApplicationDbContext context)
+            IEmailSender emailSender, ApplicationDbContext context, IBTRolesService rolesService, IBTFileService fileService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _rolesService = rolesService;
+            _fileService = fileService;
         }
 
         [BindProperty]
@@ -81,6 +88,15 @@ namespace BugTracker.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [NotMapped]
+            [DataType(DataType.Upload)]
+            public IFormFile Image { get; set; }
+            
+            public byte[] ImageData { get; set; }
+            public string ImageType { get; set; }
+            
+            
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -95,21 +111,27 @@ namespace BugTracker.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                byte[] image = await _fileService.ConvertFileToByteArrayAsync(Input.Image);
                 //Create new company
                 Company company = new()
                 {
                     Name = Input.CompanyName,
-                    Description = Input.CompanyDescription
+                    Description = Input.CompanyDescription,
+                    ImageType = Input.Image.ContentType,
+                    ImageName = Input.Image.FileName,
+                    ImageData = image
                 };
+                
                 await _context.AddAsync(company);
                 await _context.SaveChangesAsync();
                 var user = new BTUser { UserName = Input.Email, Email = Input.Email, FirstName = Input.FirstName, LastName = Input.LastName, CompanyId = company.Id };
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    await _userManager.AddToRoleAsync(user, BTRoles.Admin.ToString());
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

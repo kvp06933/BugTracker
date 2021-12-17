@@ -49,43 +49,50 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.StartDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EndDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Created)
-                            </td>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @item.StartDate?.ToString("MM.dd.yyyy")
+                        </td>
+                        <td>
+                            @item.EndDate?.ToString("MM.dd.yyyy")
+                        </td>
+                        <td>
+                            @item.Created.ToString("MM.dd.yyyy")
+                        </td>
 
 
-                            <td>
-                                @if (item.ImageData != null)
-                                {
-                                    <img style="width:60px;height:60px" src="data:image/*;base64,@(Convert.ToBase64String(item.ImageData))" alt="" />
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Archived)
-                            </td>
+                        <td>
+                            @if (item.ImageData != null)
+                            {
+                                <img style="width:60px;height:60px" src="data:image/*;base64,@(Convert.ToBase64String(item.ImageData))" alt="" />
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Archived)
+                        </td>
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
-                            </td>
-                            <td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="ti-menu" style="color:white"></i>
+                            </button>
+                            <div class="collapse" id="collapseExample">
                                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                                 <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>     
+                            
+                        
                     }
                 </tbody>
             </table>

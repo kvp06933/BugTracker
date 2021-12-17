@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
             <h4>Create a new account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -48,6 +48,21 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label class="control-label">Project Image</label>
+                <input asp-for="Input.Image" class="form-control" type="file" accept=".png,.jpg,.jpeg,.gif"
+                       onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="Input.Image" class="text-danger"></span>
+            </div>
+            <label>Image Preview</label>
+            @if (Model.Input?.ImageData != null)
+            {
+                <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px; height:80px" src="data:image/*;base64,@( Convert.ToBase64String(Model.Input.ImageData)) ">
+            }
+            else
+            {
+                <img id="imageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px" src="">
+            }
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
